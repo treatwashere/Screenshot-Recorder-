@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screenshot Recorder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📸 Screenshot Recorder</h1>
+            <p class="subtitle">Capture and record your screen with ease</p>
+        </header>
+
+        <div class="controls">
+            <div class="button-group">
+                <button id="startBtn" class="btn btn-primary">
+                    <span class="icon">⏹️</span>
+                    Start Recording
+                </button>
+                <button id="stopBtn" class="btn btn-danger" disabled>
+                    <span class="icon">⏹️</span>
+                    Stop Recording
+                </button>
+                <button id="captureBtn" class="btn btn-success">
+                    <span class="icon">📷</span>
+                    Capture Screenshot
+                </button>
+            </div>
+
+            <div class="settings">
+                <div class="setting-group">
+                    <label for="quality">Video Quality:</label>
+                    <select id="quality">
+                        <option value="1080">1080p</option>
+                        <option value="720" selected>720p</option>
+                        <option value="480">480p</option>
+                    </select>
+                </div>
+
+                <div class="setting-group">
+                    <label for="fps">Frame Rate:</label>
+                    <select id="fps">
+                        <option value="30">30 FPS</option>
+                        <option value="60" selected>60 FPS</option>
+                    </select>
+                </div>
+
+                <div class="setting-group">
+                    <label>
+                        <input type="checkbox" id="audioCheckbox">
+                        Include Audio
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div id="status" class="status">Ready to record</div>
+
+        <div class="preview-section">
+            <h2>Preview</h2>
+            <div id="preview" class="preview"></div>
+        </div>
+
+        <div class="recordings-section">
+            <h2>Recordings</h2>
+            <div id="recordingsList" class="recordings-list"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
