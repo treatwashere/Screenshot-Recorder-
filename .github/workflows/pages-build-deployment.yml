@@ -1,0 +1,70 @@
+steps:
+  - name: Checkout
+    uses: actions/checkout@v4
+
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+      node-version: '18'
+
+  - name: Install dependencies
+    run: |
+      npm ci
+
+  - name: Build
+    run: |
+      npm run build
+
+  - name: Debug: show build output
+    run: |
+      echo "Looking for common build directories..."
+      for d in dist build public out; do
+        if [ -d "$d" ]; then
+          echo "Found directory: $d"; ls -la "$d"; break
+        fi
+      done
+      echo "Full recursive listing (first 500 lines):"
+      for d in dist build public out; do
+        if [ -d "$d" ]; then
+          find "$d" -maxdepth 5 -type f -print | sed -n '1,500p'
+        fi
+      done
+      echo "Disk usage of candidate dirs:"; du -sh dist build public out || true
+
+  - name: Configure Pages
+    uses: actions/configure-pages@v3
+
+  - name: Upload artifact to GitHub Pages
+    id: upload-pages
+    uses: actions/upload-pages-artifact@v1
+    with:
+      # Set this to the folder that contains your final site files (index.html must be at the folder root).
+      path: ./dist
+
+  - name: Create debug tarball (if dist exists)
+    if: ${{ always() }}
+    run: |
+      if [ -d "dist" ]; then
+        tar -czf site-debug.tgz dist || true
+      elif [ -d "build" ]; then
+        tar -czf site-debug.tgz build || true
+      elif [ -d "public" ]; then
+        tar -czf site-debug.tgz public || true
+      else
+        echo "No site directory found to tar."
+      fi
+
+  - name: Upload debug tarball as artifact
+    if: ${{ always() }}
+    uses: actions/upload-artifact@v4
+    with:
+      name: site-debug
+      path: site-debug.tgz
+
+  - name: Deploy to GitHub Pages
+    uses: actions/deploy-pages@v1
+
+  - name: Show Pages deployment URL
+    if: ${{ always() }}
+    run: |
+      echo "Pages environment url: ${{ steps.upload-pages.outputs.environment_url || 'unknown' }}"
